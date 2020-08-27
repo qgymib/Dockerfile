@@ -34,7 +34,11 @@ RUN sed -i 's/ports.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.
 		ripgrep \
 		ack \
 		tmux \
+		screen \
 	&& curl -sL https://deb.nodesource.com/setup_lts.x | bash - \
+	&& sed -i 's/deb.nodesource.com\/node/mirrors.tuna.tsinghua.edu.cn\/nodesource\/deb/g' \
+		/etc/apt/sources.list.d/nodesource.list \
+	&& apt-get update \
 	&& DEBIAN_FRONTEND=noninteractive apt-get install -y \
 		nodejs \
 	&& rm -rf /var/lib/apt/lists/*
