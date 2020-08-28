@@ -33,8 +33,9 @@ RUN sed -i 's/ports.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.
 		universal-ctags \
 		ripgrep \
 		ack \
-		tmux \
 		screen \
+		ccls \
+		tini \
 	&& curl -sL https://deb.nodesource.com/setup_lts.x | bash - \
 	&& sed -i 's/deb.nodesource.com\/node/mirrors.tuna.tsinghua.edu.cn\/nodesource\/deb/g' \
 		/etc/apt/sources.list.d/nodesource.list \
@@ -42,10 +43,6 @@ RUN sed -i 's/ports.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.
 	&& DEBIAN_FRONTEND=noninteractive apt-get install -y \
 		nodejs \
 	&& rm -rf /var/lib/apt/lists/*
-
-# Use tini to ensures that the default signal handlers work for the software you run in docker image
-RUN wget https://github.com/krallin/tini/releases/download/v0.19.0/tini-static-arm64 -O /opt/tini \
-	&& chmod +x /opt/tini
 
 # Add user
 RUN groupadd -r ${DOCKER_USER} -g 1000 \
@@ -65,6 +62,6 @@ USER ${DOCKER_USER}
 RUN npm config set registry https://registry.npm.taobao.org
 
 WORKDIR /mnt
-ENTRYPOINT ["/opt/tini", "--"]
+ENTRYPOINT ["tini", "--"]
 CMD ["vim"]
 
