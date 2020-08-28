@@ -270,12 +270,20 @@ nnoremap <leader>tp :Leaderf gtags --previous<CR>
 let g:which_key_map.t.p = 'previous result'
 " }}}
 
-" Search management
+" Shell management
 " {{{
-let g:which_key_map.s = { 'name': '+search' }
+let g:which_key_map.s = { 'name': '+shell' }
+" Open bash
+nnoremap <leader>sb :below terminal ++close ++rows=10 bash<CR>
+let g:which_key_map.s.b = 'bash'
+" }}}
+
+" Project management
+" {{{
+let g:which_key_map.p = { 'name': '+project' }
 " Search word under cursor
-nnoremap <leader>ss :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR><CR>
-let g:which_key_map.s.s = 'search world'
+nnoremap <leader>ps :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR><CR>
+let g:which_key_map.p.s = 'search world'
 " }}}
 
 " Buffer management
