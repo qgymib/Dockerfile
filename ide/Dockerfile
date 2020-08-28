@@ -34,7 +34,6 @@ RUN sed -i 's/ports.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.
 		ripgrep \
 		ack \
 		screen \
-		ccls \
 		tini \
 	&& curl -sL https://deb.nodesource.com/setup_lts.x | bash - \
 	&& sed -i 's/deb.nodesource.com\/node/mirrors.tuna.tsinghua.edu.cn\/nodesource\/deb/g' \
