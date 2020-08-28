@@ -2,7 +2,7 @@ FROM ubuntu:latest
 
 ARG DOCKER_USER=me
 ENV NPM_CONFIG_PREFIX=/home/${DOCKER_USER}/.npm-global \
-	PATH=$PATH:/home/${DOCKER_USER}/.npm-global/bin
+	PATH=$PATH:/home/${DOCKER_USER}/.npm-global/bin:/home/${DOCKER_USER}/bin
 
 # Add necessary dependency
 RUN sed -i 's/ports.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.list \
