@@ -26,8 +26,6 @@ Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 " Viewer & Finder for LSP symbols and tags
 Plug 'liuchengxu/vista.vim'
-" A command-line fuzzy finder
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 " Check syntax in Vim asynchronously and fix files
 Plug 'dense-analysis/ale'
 " Run Async Shell Commands in Vim
