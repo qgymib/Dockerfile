@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 
-ARG DOCKER_USER=me
+ENV DOCKER_USER=ide
 ENV NPM_CONFIG_PREFIX=/home/${DOCKER_USER}/.npm-global \
 	PATH=$PATH:/home/${DOCKER_USER}/.npm-global/bin:/home/${DOCKER_USER}/bin
 
@@ -8,7 +8,8 @@ ENV NPM_CONFIG_PREFIX=/home/${DOCKER_USER}/.npm-global \
 RUN sed -i 's/ports.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.list \
 	&& sed -i 's/#\ deb-src/deb-src/g' /etc/apt/sources.list \
 	&& apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-		sudo \
+		gosu \
+		tini \
 		build-essential \
 		clang \
 		lldb \
@@ -24,7 +25,7 @@ RUN sed -i 's/ports.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.
 		python3 \
 		python3-pip \
 		python3-setuptools \
-		vim \
+		vim-nox \
 		bash-completion \
 		wget \
 		curl \
@@ -33,8 +34,6 @@ RUN sed -i 's/ports.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.
 		universal-ctags \
 		ripgrep \
 		ack \
-		screen \
-		tini \
 	&& curl -sL https://deb.nodesource.com/setup_lts.x | bash - \
 	&& sed -i 's/deb.nodesource.com\/node/mirrors.tuna.tsinghua.edu.cn\/nodesource\/deb/g' \
 		/etc/apt/sources.list.d/nodesource.list \
@@ -45,22 +44,22 @@ RUN sed -i 's/ports.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.
 
 # Add user
 RUN groupadd -r ${DOCKER_USER} -g 1000 \
-	&& useradd -u 1000 -r -g ${DOCKER_USER} -m -d /home/${DOCKER_USER} -s /sbin/nologin -c "${DOCKER_USER}" ${DOCKER_USER} \
+	&& useradd -u 1000 -r -g ${DOCKER_USER} -m -d /home/${DOCKER_USER} \
+		-s /sbin/nologin -c "${DOCKER_USER}" ${DOCKER_USER} \
 	&& chown -R ${DOCKER_USER} /home/${DOCKER_USER} \
 	&& adduser ${DOCKER_USER} sudo \
 	&& echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # Add neovim plugin support
-RUN pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+RUN npm config set registry https://registry.npm.taobao.org \
+	&& pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
 	&& pip3 install --system pynvim pygments
 
-# Set the user to use when running this image
-USER ${DOCKER_USER}
-
-# Speedup npm install progress
-RUN npm config set registry https://registry.npm.taobao.org
+# Write entrypoint.sh
+COPY entrypoint.sh /usr/local/bin
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 WORKDIR /mnt
-ENTRYPOINT ["tini", "--"]
-CMD ["vim"]
+ENTRYPOINT [ "tini", "--", "entrypoint.sh" ]
+CMD [ "vim" ]
 
